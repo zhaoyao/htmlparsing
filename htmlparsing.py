@@ -18,9 +18,13 @@ class AttributeDict(dict):
 
 class Element:
 
-    def __init__(self, text: str):
-        self.html = text
-        self.element = html.fromstring(text)
+    def __init__(self, text: str, e: html.Element):
+        if text is None:
+            self.html = html.tostring(e)
+            self.element = e            
+        else:            
+            self.html = text
+            self.element = html.fromstring(text)
 
     def __repr__(self):
         return '<Element {}>'.format(self.element.tag)
@@ -51,10 +55,10 @@ class Element:
         return [r[0] for r in findall(template, self.html)]
 
     def css(self, selector: str):
-        return [Element(html.tostring(e).decode().strip()) for e in self.element.cssselect(selector)]
+        return [Element(e: e) for e in self.element.cssselect(selector)]
 
     def xpath(self, selector: str):
-        return [Element(html.tostring(e).decode().strip()) for e in self.element.xpath(selector)]
+        return [Element(e: e) for e in self.element.xpath(selector)]
 
 
 class Selector:
